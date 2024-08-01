@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 @Config
 public class Extension {
 
-    public static double retractedPos=0.72 , deployedPos=0.18;
+    public static double retractedPos=0.74 , deployedPos=0.05;
 
     public static double profileMaxVelocity=20 , profileAcceleration=32;
     public BetterMotionProfile profile=new BetterMotionProfile(profileMaxVelocity , profileAcceleration , profileAcceleration);
@@ -44,18 +44,24 @@ public class Extension {
 
     public void setRetracted()
     {
-        if(profile.finalPosition!=retractedPos){profile.setMotion(profile.getPosition() , retractedPos , profile.getVelocity());
-                                                state=State.GOING_RETRACTED;}
+
+        profile.setMotion(profile.getPosition() , retractedPos , profile.getVelocity());
+            state=State.GOING_RETRACTED;
+
     }
     public void setDeployed()
     {
         if(profile.finalPosition!=deployedPos){profile.setMotion(profile.getPosition() , deployedPos , profile.getVelocity());
-                                               state=State.GOING_DEPLOYED;}
+            state=State.GOING_DEPLOYED;}
     }
     public boolean isRetracted()
     {
-        if(state==State.RETRACTED)return true;
+        if(servo.getPosition()==profile.finalPosition && state==State.RETRACTED)return true;
         return false;
+    }
+    public double getPosition()
+    {
+        return servo.getPosition();
     }
     public boolean isDeployed()
     {
@@ -68,11 +74,11 @@ public class Extension {
         State.GOING_DEPLOYED.position=deployedPos;
 
         State.RETRACTED.position=retractedPos;
-        State.GOING_RETRACTED.position=deployedPos;
+        State.GOING_RETRACTED.position=retractedPos;
 
         if((state==State.GOING_DEPLOYED || state==State.DEPLOYED) && profile.getPosition()==profile.finalPosition && profile.finalPosition!=deployedPos)
-            {profile.setMotion(profile.getPosition() , deployedPos , profile.getVelocity());
-             state=State.GOING_DEPLOYED;}
+        {profile.setMotion(profile.getPosition() , deployedPos , profile.getVelocity());
+            state=State.GOING_DEPLOYED;}
 
         if((state==State.GOING_RETRACTED || state==State.RETRACTED) && profile.getPosition()==profile.finalPosition && profile.finalPosition!=retractedPos)
         {profile.setMotion(profile.getPosition() , retractedPos , profile.getVelocity());
@@ -83,13 +89,15 @@ public class Extension {
 
     private void updateHardware()
     {
+
         servo.setPosition(profile.getPosition());
     }
 
     public void update()
     {
+        profile.update();
         updateState();
         updateHardware();
-        profile.update();
+
     }
 }

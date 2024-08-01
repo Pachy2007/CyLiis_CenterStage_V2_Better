@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 @Config
 public class Pitch {
 
-
+    public static boolean ENABLE=true;
     public static boolean reversed=false;
 
     public static double v[]={0.03 , 0.315 , 0.585     , 0.865};
@@ -43,6 +43,7 @@ public class Pitch {
 
     public Pitch(State initialState)
     {
+        if(!ENABLE)return;
         servo= Hardware.sch2;
         if(reversed)servo.setDirection(Servo.Direction.REVERSE);
 
@@ -55,12 +56,13 @@ public class Pitch {
     }
     public void setMiddle()
     {
+        if(state==State.GOING_MIDDLE || state==State.MIDDLE)return;
         profile.setMotion(state.position , middlePos , 0);
         state=State.GOING_MIDDLE;
     }
     public boolean isMiddle()
     {
-        if(state==State.MIDDLE)return true;
+        if(state==State.MIDDLE && servo.getPosition()==middlePos)return true;
         return false;
     }
     public boolean isBackdrop()
@@ -102,6 +104,7 @@ public class Pitch {
 
     public void update()
     {
+        if(!ENABLE)return;
         updateState();
         updateHardware();
         profile.update();

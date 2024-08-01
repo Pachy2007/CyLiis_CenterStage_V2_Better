@@ -35,9 +35,10 @@ public class ActiveIntake {
     {
         switch (state)
         {
-            case REPAUS:motor.setPower(0);
+            case REPAUS:
+                motor.setPower(0);
             break;
-            case REVERSE:motor.setPower(-1);
+            case REVERSE:motor.setPower(-0.5);
             break;
             case INTAKE:motor.setPower(1);
             break;

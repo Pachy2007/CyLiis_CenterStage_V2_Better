@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.Math.BetterMotionProfile;
 import org.firstinspires.ftc.teamcode.Math.PIDController;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
@@ -15,8 +16,11 @@ public class Lift {
     public static double adjustingPos=200;
     public static int nr=0;
 
-    public static double kp=0.0479 , ki=0.00000555 , kd=0.001 , ff1=0.04 , ff2=0.00002;
+    public static double kp=0.0134 , ki=0.000000 , kd=0.00025 , ff1=0.05 , ff2=0;
     public PIDController controller=new PIDController(kp , ki , kd , ff1 , ff2);
+    public static double maxVelocity=14000 , acc=18000 , dec=10000;
+    public BetterMotionProfile profile=new BetterMotionProfile(maxVelocity , acc , dec);
+    public static double inPower=-0.1;
 
     public static double positionTreshHold=30;
 
@@ -44,8 +48,10 @@ public class Lift {
     public Lift(State initialState)
     {
         motor= Hardware.meh2;
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         state=initialState;
+        profile.setMotion(0 , 0 , 0);
     }
     public double getPosition()
     {
@@ -62,7 +68,7 @@ public class Lift {
     }
     public void youReady()
     {
-        if(state==State.BEFORE_DOWN)state=State.GOING_DOWN;
+        state=State.GOING_DOWN;
     }
 
     private void updateState()
@@ -89,26 +95,32 @@ public class Lift {
         {
             case GOING_OUT:
             case OUT:
-                 power=controller.calculate(outPosition , motor.getCurrentPosition());
+                outPosition=Math.min(outPosition , 1000);
+                if(profile.finalPosition!=outPosition)profile.setMotion(motor.getCurrentPosition() , outPosition , profile.getVelocity());
+                 power=controller.calculate(profile.getPosition() , motor.getCurrentPosition());
                 motor.setPower(power);
                 break;
             case BEFORE_DOWN:
-                 power=controller.calculate(100 , motor.getCurrentPosition());
+                if(profile.finalPosition!=300)profile.setMotion(motor.getCurrentPosition() , 300 , profile.getVelocity());
+                power=controller.calculate(profile.getPosition() , motor.getCurrentPosition());
                 motor.setPower(power);
                 break;
             case DOWN:
-               motor.setPower(-0.2);
+               motor.setPower(inPower);
                 break;
             case GOING_DOWN:
-                motor.setPower(-0.8);
+                motor.setPower(-0.9);
                 break;
         }
     }
 
     public void update()
     {
-        outPosition=Math.max(200 , outPosition);
-        outPosition=Math.min(1000 , outPosition);
+        //outPosition=Math.max(200 , outPosition);
+        //
+        // =Math.min(1000 , outPosition);
+
+        profile.update();
 
         controller.ff1=ff1;
         controller.ff2=ff2;

@@ -6,7 +6,7 @@ public class Intake {
     public enum State{
         REPAUS , INTAKE , REVERSE;
     }
-    State state;
+    public State state=State.REPAUS;
     ActiveIntake activeIntake;
     public DropDown dropDown;
 
@@ -28,7 +28,7 @@ public class Intake {
 
     public void decreaseDropDown()
     {
-        DropDown.index--;
+        dropDown.setIndex(DropDown.index-1);
     }
 
     public void setDropDown(int index)

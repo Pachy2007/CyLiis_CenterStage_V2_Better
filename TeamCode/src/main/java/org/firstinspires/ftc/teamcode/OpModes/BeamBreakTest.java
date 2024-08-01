@@ -6,16 +6,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
-import org.firstinspires.ftc.teamcode.Wrappers.CoolDigitalSensor;
 
 @TeleOp(group="zz")
 public class BeamBreakTest extends OpMode {
-    CoolDigitalSensor breakBeam0, breakBeam1;
+    DigitalChannel breakBeam0, breakBeam1;
     
     @Override
     public void init() {
-        breakBeam0 = new CoolDigitalSensor(hardwareMap.get(DigitalChannel.class, "bb0"));
-        breakBeam1 = new CoolDigitalSensor(hardwareMap.get(DigitalChannel.class, "bb1"));
+        breakBeam0 = hardwareMap.get(DigitalChannel.class , "bb0");
+        breakBeam1 = hardwareMap.get(DigitalChannel.class , "bb1");
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 

@@ -27,6 +27,7 @@ public class ExtensionTest extends LinearOpMode {
 
             extension.update();
 
+
             telemetry.addData("STATE" , extension.state);
             telemetry.update();
         }

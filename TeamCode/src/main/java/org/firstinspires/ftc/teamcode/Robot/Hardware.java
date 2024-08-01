@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Robot;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -16,6 +17,9 @@ public class Hardware {
 
     public static Servo sch0 , sch1 , sch2 , sch3 , sch4 , sch5;
     public static Servo seh0 , seh1 , seh2 , seh3 , seh4 , seh5;
+
+    public DigitalChannel beamBreak0, beamBreak1;
+
 
     public static IMU imu;
 

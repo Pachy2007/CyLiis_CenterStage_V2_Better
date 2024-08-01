@@ -6,7 +6,7 @@ public class Outtake
 
     public enum State{
         DOWN , PREAPERING_UP, UP,
-        PREAPEARING_DOWN_BACKDROP , PREAPERING_DOWN , GOING_DOWN;
+        PREAPEARING_DOWN_BACKDROP , PREAPERING_DOWN , GOING_DOWN , PURPLE;
     }
     public State state;
     public AngularExtension angularExtension;
@@ -33,26 +33,37 @@ public class Outtake
 
         state=State.PREAPERING_UP;
         lift.setPosition(Lift.outPosition);
-        angularExtension.setDeployed();
+
+    }
+    public void goPURPLE()
+    {
+        if(state==State.UP || state==State.PREAPERING_UP)return;
+
+        state=State.PURPLE;
+        angularExtension.state= AngularExtension.State.PURPLE;
+        lift.setPosition(Lift.outPosition);
         if(useExtension)extension.setDeployed();
     }
     public void goDOWN()
     {
         if(state==State.DOWN || state==State.GOING_DOWN || state==State.PREAPERING_DOWN || state==State.PREAPEARING_DOWN_BACKDROP)return;
 
-        state=State.PREAPEARING_DOWN_BACKDROP;
+
+            state=State.PREAPEARING_DOWN_BACKDROP;
         pitch.setMiddle();
         turret.setMiddle();
-        angularExtension.setRetracted();
+
     }
 
     private void updateState()
     {
-        if(useExtension && extension.isRetracted() && state==State.UP)extension.setDeployed();
         switch(state)
         {
             case PREAPERING_UP:
-                if(angularExtension.isDeployed() && lift.getPosition()>200)
+                if(lift.getPosition()>100)
+                angularExtension.setDeployed();
+                if(useExtension)extension.setDeployed();
+                if(angularExtension.isDeployed() && extension.isDeployed())
             {
                 state=State.UP;
                 pitch.setBackDrop();
@@ -60,12 +71,13 @@ public class Outtake
             }
                 break;
             case PREAPEARING_DOWN_BACKDROP:
-            if(angularExtension.isRetracted() && turret.isMiddle() && pitch.isMiddle())
+            if(turret.isMiddle() && pitch.isMiddle())
             {
-                state=State.PREAPERING_DOWN;
                 extension.setRetracted();
                 angularExtension.setRetracted();
-                lift.state=Lift.State.BEFORE_DOWN;
+                state=State.PREAPERING_DOWN;
+                if(Lift.outPosition<150)lift.setDown();
+
             }
             break;
             case PREAPERING_DOWN:
@@ -79,6 +91,7 @@ public class Outtake
                 if(lift.state==Lift.State.DOWN)state=State.DOWN;
                 break;
             case UP:
+                break;
             case DOWN:
                 break;
         }
@@ -87,11 +100,17 @@ public class Outtake
 
     public void update()
     {
-        lift.update();
-        angularExtension.update();
-        extension.update();
-        pitch.update();
+
+
         turret.update();
+        pitch.update();
+        lift.update();
+
+        extension.update();
+        angularExtension.update();
+
+
+
         updateState();
 
 

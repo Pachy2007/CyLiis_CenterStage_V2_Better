@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 @Config
 public class Extendo {
 
-    public static double kp=0.005 , ki=0.000002 , kd=0.000002;
+    public static double kp=0.0075 , ki=0.00000006 , kd=0.00065;
 
     public  PIDController pidController;
     public  boolean ENABLE=true;
@@ -30,7 +30,7 @@ public class Extendo {
     public  double targetTreshHold=30;
     public  double overflowPower=0.1;
 
-    public  double velocityTreshHold=0.05;
+    public  double velocityTreshHold=0.1;
 
     public  boolean motor1Reversed=true , motor2Reversed=true;
 
@@ -54,13 +54,15 @@ public class Extendo {
 
     DcMotorEx motor1 , motor2;
 
-    DcMotorEx encoder;
+    public DcMotorEx encoder;
 
     public Extendo(State initialState)
     {
         motor1= Hardware.meh0;
         motor2=Hardware.meh1;
         encoder=Hardware.meh0;
+
+        encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -90,6 +92,7 @@ public class Extendo {
     }
     public void setIN()
     {
+        if(state==State.RESETTING || state==State.GOING_IN || state==State.IN)return;
         power=0;
         position=0;
         reset=true;
@@ -118,7 +121,7 @@ public class Extendo {
             case RESETTING:
             case GOING_IN:
                 if(Math.abs(encoder.getVelocity())<velocityTreshHold)nr++;
-                if(nr>7)
+                if(nr>2)
                 {
                     encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     encoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -160,15 +163,15 @@ public class Extendo {
         switch(state)
         {
             case GOING_IN:
-                motor1.setPower(-.9);
-                motor2.setPower(-.9);
+                motor1.setPower(-1);
+                motor2.setPower(-1);
                 break;
             case RESETTING:
-                motor1.setPower(-.9);
-                motor2.setPower(-.9);
+                motor1.setPower(-1);
+                motor2.setPower(-1);
                 break;
             case GOING_OUT:
-                if(encoder.getCurrentPosition()>1250 && power>0)
+                if(encoder.getCurrentPosition()>1350 && power>0)
                 {motor1.setPower(overflowPower);
                     motor2.setPower(overflowPower);}
                 else

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 public class AngularExtension {
 
     public static double retractedPos=0.69 , deployedPos=0.08;
-            ;
+    ;
 
     public static double profileMaxVelocity=20 , profileAcceleration=32;
     public BetterMotionProfile profile=new BetterMotionProfile(profileMaxVelocity , profileAcceleration , profileAcceleration);
@@ -18,7 +18,7 @@ public class AngularExtension {
     Servo servo;
     public enum State{
         RETRACTED(retractedPos) , GOING_RETRACTED(RETRACTED , retractedPos),
-        DEPLOYED(deployedPos) , GOING_DEPLOYED(DEPLOYED , deployedPos);
+        DEPLOYED(deployedPos) , GOING_DEPLOYED(DEPLOYED , deployedPos) , PURPLE(0.45);
 
         State nextState;
         double position;
@@ -33,6 +33,7 @@ public class AngularExtension {
             this.position=position;
         }
 
+
     }
     public State state;
     public AngularExtension(State initialState)
@@ -45,26 +46,27 @@ public class AngularExtension {
 
     public void setRetracted()
     {
-        if(profile.finalPosition!=retractedPos){profile.setMotion(profile.getPosition() , retractedPos , profile.getVelocity());
-                                                state= State.GOING_RETRACTED;}
+        if(profile.finalPosition!=retractedPos || state==State.PURPLE){profile.setMotion(profile.getPosition() , retractedPos , profile.getVelocity());
+            state= State.GOING_RETRACTED;}
     }
     public void setDeployed()
     {
         if(profile.finalPosition!=deployedPos){profile.setMotion(profile.getPosition() , deployedPos , profile.getVelocity());
-                                               state= State.GOING_DEPLOYED;}
+            state= State.GOING_DEPLOYED;}
     }
     public boolean isRetracted()
     {
-        if(state== State.RETRACTED)return true;
+        if(servo.getPosition()==retractedPos)return true;
         return false;
     }
     public boolean isDeployed()
     {
-        if(state== State.DEPLOYED)return true;
+        if(state== State.DEPLOYED && servo.getPosition()==deployedPos && profile.finalPosition==deployedPos)return true;
         return false;
     }
     private void updateState()
     {
+        if(state==State.PURPLE)return;
         State.DEPLOYED.position=deployedPos;
         State.GOING_DEPLOYED.position=deployedPos;
 
@@ -72,8 +74,8 @@ public class AngularExtension {
         State.GOING_RETRACTED.position=deployedPos;
 
         if((state== State.GOING_DEPLOYED || state== State.DEPLOYED) && profile.getPosition()==profile.finalPosition && profile.finalPosition!=deployedPos)
-            {profile.setMotion(profile.getPosition() , deployedPos , profile.getVelocity());
-             state= State.GOING_DEPLOYED;}
+        {profile.setMotion(profile.getPosition() , deployedPos , profile.getVelocity());
+            state= State.GOING_DEPLOYED;}
 
         if((state== State.GOING_RETRACTED || state== State.RETRACTED) && profile.getPosition()==profile.finalPosition && profile.finalPosition!=retractedPos)
         {profile.setMotion(profile.getPosition() , retractedPos , profile.getVelocity());
@@ -84,13 +86,15 @@ public class AngularExtension {
 
     private void updateHardware()
     {
-        servo.setPosition(profile.getPosition());
+
+        if(state==State.PURPLE)servo.setPosition(state.position);
+        else  servo.setPosition(profile.getPosition());
     }
 
     public void update()
     {
+        profile.update();
         updateState();
         updateHardware();
-        profile.update();
     }
 }

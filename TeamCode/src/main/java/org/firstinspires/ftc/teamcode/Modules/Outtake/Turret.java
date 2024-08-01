@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 @Config
 public class Turret {
 
+
+    public static boolean ENABLE=true;
     public static double profileMaxVelocity=20 , profileAcceleration=32;
 
     BetterMotionProfile profile=new BetterMotionProfile(profileMaxVelocity , profileAcceleration , profileAcceleration);
@@ -18,7 +20,7 @@ public class Turret {
     public static boolean reversed=true;
     public static double backdropPosition;
     public enum State{
-        MIDDLE(0.5) , GOING_MIDDLE(0.5 , MIDDLE),
+        MIDDLE(0.55) , GOING_MIDDLE(0.55 , MIDDLE),
         BACKDROP(backdropPosition);
 
         double position;
@@ -40,9 +42,11 @@ public class Turret {
 
     public Turret(State initialState)
     {
+        if(!ENABLE)return;
         servo= Hardware.sch3;
         if(reversed)servo.setDirection(Servo.Direction.REVERSE);
         state=initialState;
+        profile.setMotion(0.55 , 0.55 ,0);
     }
     public void setBackdrop()
     {
@@ -50,8 +54,9 @@ public class Turret {
     }
     public void setMiddle()
     {
+        if(state==State.MIDDLE || state==State.GOING_MIDDLE)return;
         state=State.GOING_MIDDLE;
-        profile.setMotion(backdropPosition , 0.5 , 0);
+        profile.setMotion(backdropPosition , 0.55 , 0);
     }
     public void switchState()
     {
@@ -59,7 +64,7 @@ public class Turret {
         {
             case BACKDROP:
                 state=State.GOING_MIDDLE;
-                profile.setMotion(backdropPosition , 0.5 , 0);
+                profile.setMotion(backdropPosition , 0.55 , 0);
                 break;
             case MIDDLE:
             case GOING_MIDDLE:
@@ -69,8 +74,12 @@ public class Turret {
     }
     public boolean isMiddle()
     {
-        if(state==State.MIDDLE)return true;
+        if(state==State.MIDDLE && servo.getPosition()==0.55)return true;
         return false;
+    }
+    public double getPosition()
+    {
+        return servo.getPosition();
     }
 
     private void updateState()
@@ -81,19 +90,18 @@ public class Turret {
         State.BACKDROP.position=backdropPosition;
     }
 
-    private void updateBackdropPosition()
-    {
-        double heading=Hardware.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-        if(heading<0)heading=Math.PI+heading;
-        double backdropPosition=0.5+(180*heading-90*Math.PI)/(355*Math.PI);
-        if(Math.abs(backdropPosition-this.backdropPosition)>0.005)this.backdropPosition=backdropPosition;
+    private void updateBackdropPosition() {
+        double heading = Hardware.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        if (heading < 0) heading = Math.PI + heading;
+        double backdropPosition = 0.55 + (180 * heading - 90 * Math.PI) / (355 * Math.PI);
+        this.backdropPosition = backdropPosition;
     }
     private void updateHardware()
     {
         switch(state)
         {
             case MIDDLE:
-                servo.setPosition(0.5);
+                servo.setPosition(0.55);
                 break;
             case GOING_MIDDLE:
                 servo.setPosition(profile.getPosition());
@@ -105,6 +113,7 @@ public class Turret {
     }
     public void update()
     {
+        if(!ENABLE)return;
         profile.update();
         updateBackdropPosition();
         updateState();

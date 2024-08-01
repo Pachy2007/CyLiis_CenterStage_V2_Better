@@ -13,7 +13,7 @@ public class TurretCalibration extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Hardware.init(hardwareMap);
-        turret=new Turret(Turret.State.BACKDROP);
+        turret=new Turret(Turret.State.MIDDLE);
         Hardware.imu.resetYaw();
         boolean prev=false;
         waitForStart();

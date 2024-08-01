@@ -10,9 +10,9 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 @Config
 public class TopGripper {
 
-    public static double openPos=0 , closedPos=1;
+    public static double openPos=0.05 , closedPos=0.93;
 
-    public static double profileMaxVelocity=20 , profileAcceleration=32;
+    public static double profileMaxVelocity=25 , profileAcceleration=32;
     public BetterMotionProfile profile=new BetterMotionProfile(profileMaxVelocity , profileAcceleration , profileAcceleration);
 
     public enum State{
@@ -63,15 +63,19 @@ public class TopGripper {
     }
     public boolean isClosed()
     {
-        if(state==State.CLOSED)return true;
+        if(servo.getPosition()==profile.finalPosition && state==State.CLOSED && servo.getPosition()==closedPos)return true;
         return false;
     }
     public boolean isOpen()
     {
-        if(state==State.OPEN)return true;
+        if(servo.getPosition()==profile.finalPosition && state==State.OPEN && servo.getPosition()==openPos)return true;
         return false;
     }
 
+    public double getPosition()
+    {
+        return servo.getPosition();
+    }
     private void updateState()
     {
         if(profile.finalPosition!=state.position)profile.setMotion(profile.getPosition() , state.position , 0);

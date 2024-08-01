@@ -13,13 +13,13 @@ public class DropDown {
 
     public static boolean reverse=false;
 
-    public static double intakePos[]={0.63 , 0.6 , 0.58 , 0.565 , 0.53};
-    public static double repausPos[]={0.6 , 0.58 , 0.56 , 0.54 , 0.51};
+    public static double intakePos[]={0.59 , 0.55 , 0.52 , 0.505 , 0.475};
+    public static double repausPos[]={0.55 , 0.5 , 0.5 , 0.28 , 0.45};
 
     public static int index=0;
 
     public enum State{
-        INTAKE(intakePos[index]) , REPAUS(repausPos[index]) , REVERSE(0.55);
+        INTAKE(intakePos[index]) , REPAUS(repausPos[index]) , REVERSE(0.45);
         double position;
         State(double position)
         {
