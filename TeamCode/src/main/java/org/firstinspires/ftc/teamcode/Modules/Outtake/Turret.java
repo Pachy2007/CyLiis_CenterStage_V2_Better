@@ -46,6 +46,8 @@ public class Turret {
         servo= Hardware.sch3;
         if(reversed)servo.setDirection(Servo.Direction.REVERSE);
         state=initialState;
+
+        servo.setPosition(0.55);
         profile.setMotion(0.55 , 0.55 ,0);
     }
     public void setBackdrop()
@@ -101,12 +103,15 @@ public class Turret {
         switch(state)
         {
             case MIDDLE:
+                if(servo.getPosition()!=0.55)
                 servo.setPosition(0.55);
                 break;
             case GOING_MIDDLE:
+                if(servo.getPosition()!=profile.getPosition())
                 servo.setPosition(profile.getPosition());
                 break;
             case BACKDROP:
+                if(servo.getPosition()!=backdropPosition)
                 servo.setPosition(backdropPosition);
                 break;
         }

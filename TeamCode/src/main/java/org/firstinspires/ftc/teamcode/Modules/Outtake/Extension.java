@@ -39,6 +39,7 @@ public class Extension {
         state=initialState;
         servo=Hardware.sch0;
         if(reversed)servo.setDirection(Servo.Direction.REVERSE);
+        servo.setPosition(state.position);
         profile.setMotion(state.position , state.position , 0);
     }
 
@@ -90,6 +91,7 @@ public class Extension {
     private void updateHardware()
     {
 
+        if(servo.getPosition()!=profile.getPosition())
         servo.setPosition(profile.getPosition());
     }
 

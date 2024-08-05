@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 @Config
 public class Extendo {
 
-    public static double kp=0.0075 , ki=0.00000006 , kd=0.00065;
+    public static double kp=0.0075 , ki=0.00000006 , kd=0.00055;
 
     public  PIDController pidController;
     public  boolean ENABLE=true;
@@ -26,7 +26,7 @@ public class Extendo {
     public  double powerTreshHold=0.05;
 
     public static double targetPosition;
-    public  double inPower=-0.05;
+    public  double inPower=-0.15;
     public  double targetTreshHold=30;
     public  double overflowPower=0.1;
 
@@ -121,7 +121,7 @@ public class Extendo {
             case RESETTING:
             case GOING_IN:
                 if(Math.abs(encoder.getVelocity())<velocityTreshHold)nr++;
-                if(nr>2)
+                if(nr>1)
                 {
                     encoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     encoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

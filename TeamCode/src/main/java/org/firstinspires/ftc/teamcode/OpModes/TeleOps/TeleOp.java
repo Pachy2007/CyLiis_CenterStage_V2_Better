@@ -59,7 +59,7 @@ public class TeleOp extends LinearOpMode {
 
         while(opModeIsActive())
         {
-            if(gamepad1.ps)plane.Zone1();
+            if(gamepad1.ps && plane.state== Plane.State.CLOSED)plane.Zone1();
 
             if(hooks.isDeploy())
             {if(gamepad1.y && outtake.state== Outtake.State.DOWN && !okPTO)
@@ -71,12 +71,15 @@ public class TeleOp extends LinearOpMode {
                         drive.setMode(MecanumDriveTrain.State.DRIVE);
                         extendo.inPower=-0.05;
                         Lift.inPower=-0.1;
+                        extendo.setIN();
                         break;
                     case Disengaged:
                         pto.Engage();
                         drive.setMode(MecanumDriveTrain.State.CLIMB);
                         extendo.inPower=0;
                         Lift.inPower=0;
+
+
                         break;
                 }
             }}

@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Modules.Others.Plane;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.OpModes.RedLeft;
 import org.firstinspires.ftc.teamcode.OpModes.RedMiddle;
-import org.firstinspires.ftc.teamcode.OpModes.RedRight;
+import org.firstinspires.ftc.teamcode.OpModes.AutoBlue.RedRight;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.vision.VisionPortal;
 
@@ -29,6 +29,7 @@ public class Red extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        RedRight redRight=new RedRight();
         Hardware.init(hardwareMap);
         processor = new PropDetectionRedFar();
         portal = new VisionPortal.Builder()
@@ -48,7 +49,6 @@ public class Red extends LinearOpMode {
         Outtake outtake=new Outtake(Outtake.State.DOWN);
         intake.setDropDown(4);
         MecanumDriveTrain.KP=1.5;
-        RedRight.waitTime=waitTime;
         RedLeft.waitTime=waitTime;
         RedMiddle.waitTime=waitTime;
 
@@ -67,12 +67,14 @@ public class Red extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            if (detectionCase == 1)
-                RedLeft.run(hardwareMap);
-            if(detectionCase==2)
-                RedMiddle.run(hardwareMap , telemetry);
-            if(detectionCase==3)
-                RedRight.run(hardwareMap , telemetry);
+
+            redRight.run(hardwareMap , telemetry);
+            //if (detectionCase == 1)
+             //   RedLeft.run(hardwareMap);
+            //if(detectionCase==2)
+            //    RedMiddle.run(hardwareMap , telemetry);
+            //if(detectionCase==3)
+             //   RedRight.run(hardwareMap , telemetry);
         }
 
     }

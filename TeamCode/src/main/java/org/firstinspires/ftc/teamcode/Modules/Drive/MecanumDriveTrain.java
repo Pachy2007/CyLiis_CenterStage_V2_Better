@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Modules.Drive;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -28,11 +29,11 @@ public class MecanumDriveTrain {
     public double error;
     double rotation;
 
-    public static double lateralMultiplier=2.5;
+    public static double lateralMultiplier=2;
     public double realHeading;
 
-    public static double kp=0.093 , ki=0.0005 , kd=0.016;
-    public static double KP=1.3 , KI , KD=0.18;
+    public static double kp=0.1 , ki=0.000086 , kd=0.0165;
+    public static double KP=1.27 , KI , KD=0.19;
     PIDController controllerX=new PIDController(kp , ki , kd) , controllerY=new PIDController(kp , ki , kd) , controllerHeading=new PIDController(KP , KI , KD);
 
     public TwoWheelTrackingLocalizer localizer=new TwoWheelTrackingLocalizer();
@@ -68,7 +69,6 @@ public class MecanumDriveTrain {
     }
     public boolean inPosition( double x , double y , double error)
     {
-        if(rotation>0.005)return false;
         if(Math.abs(targetX-localizer.getPoseEstimate().getX())<x && Math.abs(targetY-localizer.getPoseEstimate().getY())<y && this.error<error)return true;
         return false;
     }
@@ -106,6 +106,14 @@ public class MecanumDriveTrain {
         targetX=x;
         targetY=y;
         targetHeading=heading;
+
+
+    }
+    public void setTargetPosition(Pose2d position)
+    {
+        targetX=position.getX();
+        targetY=position.getY();
+        targetHeading=position.getHeading();
 
 
     }

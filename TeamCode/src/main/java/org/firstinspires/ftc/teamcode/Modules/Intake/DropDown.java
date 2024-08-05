@@ -13,13 +13,15 @@ public class DropDown {
 
     public static boolean reverse=false;
 
-    public static double intakePos[]={0.59 , 0.55 , 0.52 , 0.505 , 0.475};
-    public static double repausPos[]={0.55 , 0.5 , 0.5 , 0.28 , 0.45};
+    public static double intakePos[]={0.535 , 0.51 , 0.475 , 0.45 , 0.43};
+    public static double repausPos[]={0.51 , 0.48 , 0.46 , 0.44 , 0.41
+    };
 
     public static int index=0;
 
     public enum State{
-        INTAKE(intakePos[index]) , REPAUS(repausPos[index]) , REVERSE(0.45);
+        INTAKE(intakePos[index]) , REPAUS(repausPos[index]) , REVERSE(0.4
+        );
         double position;
         State(double position)
         {
@@ -61,6 +63,7 @@ public class DropDown {
 
     private void updateHardware()
     {
+        if(servo.getPosition()!=state.position)
         servo.setPosition(state.position);
     }
     public void update()

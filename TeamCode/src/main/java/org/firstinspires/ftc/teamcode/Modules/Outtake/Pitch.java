@@ -48,6 +48,8 @@ public class Pitch {
         if(reversed)servo.setDirection(Servo.Direction.REVERSE);
 
         state=initialState;
+
+        servo.setPosition(state.position);
     }
 
     public void setBackDrop()
@@ -99,6 +101,7 @@ public class Pitch {
 
     private void updateHardware()
     {
+        if(servo.getPosition()!=state.position)
         servo.setPosition(state.position);
     }
 

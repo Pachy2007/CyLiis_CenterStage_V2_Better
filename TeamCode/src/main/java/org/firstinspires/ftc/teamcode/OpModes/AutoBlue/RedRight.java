@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Modules.Drive.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.Modules.Intake.DropDown;
 import org.firstinspires.ftc.teamcode.Modules.Intake.Extendo;
@@ -19,11 +18,9 @@ import org.firstinspires.ftc.teamcode.Modules.Others.TopGripper;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Lift;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Outtake;
 import org.firstinspires.ftc.teamcode.Modules.Outtake.Pitch;
-import org.firstinspires.ftc.teamcode.Robot.Hardware;
 import org.firstinspires.ftc.teamcode.Robot.Node;
-import org.opencv.core.Mat;
 
-public class BlueRight {
+public class RedRight {
 
 
     MecanumDriveTrain driveTrain;
@@ -44,18 +41,17 @@ public class BlueRight {
     int whiteTries = 0;
     int ticks = 0;
 
-    Pose2d purplePosition=new Pose2d( 37.189 , -18.7 ,-Math.PI/2-0.1);
-    Pose2d coridorPosition=new Pose2d( 51.4 ,-15 , -Math.PI/2);
-    Pose2d beforeYellowPosition=new Pose2d(51.4 ,75 , -Math.PI/2);
-    Pose2d yellowPosition=new Pose2d(46.5 ,92.1 , -2.27);
-    Pose2d beforeGoToStackPosition=new Pose2d( 54 , 83 , -Math.PI/2);
-    Pose2d goTo7Position=new Pose2d(53 ,18 , -Math.PI/2);
-    Pose2d takeFrom7Position=new Pose2d(53 , 17 , - 1.23);
-    Pose2d takeFrom7Position_second=new Pose2d(53 , 17 , - 1.27);
-    Pose2d beforeBackdropPosition=new Pose2d( 54 , 80 , -Math.PI/2);
-    Pose2d putWhitesPosition=new Pose2d(48.5 , 91 ,-2.25);
-    Pose2d takeFrom5Position=new Pose2d(54, 19 , -Math.PI/2);
-    Pose2d parkPosition=new Pose2d(51.4 , 86 , - 1.9);
+    Pose2d purplePosition=new Pose2d( 38.2 , -1.5 ,Math.PI/2);
+    Pose2d coridorPosition=new Pose2d( 51.2 ,0 , Math.PI/2);
+    Pose2d beforeYellowPosition=new Pose2d(51.2 ,-75 , Math.PI/2);
+    Pose2d yellowPosition=new Pose2d(34.6 ,-91.5 , 2.27);
+    Pose2d beforeGoToStackPosition=new Pose2d( 51.2 , -83 , Math.PI/2);
+    Pose2d goTo7Position=new Pose2d(51.2 ,-18 , Math.PI/2);
+    Pose2d takeFrom7Position=new Pose2d(51.2 , -17 , 1.255);
+    Pose2d beforeBackdropPosition=new Pose2d( 51.4 , -80 , Math.PI/2);
+    Pose2d putWhitesPosition=new Pose2d(46.5 , -90.9 ,2.25);
+    Pose2d takeFrom5Position=new Pose2d(51.42, -18 , Math.PI/2);
+    Pose2d parkPosition=new Pose2d(51.2 , -83 ,  1.9);
 
     ElapsedTime timer2=new ElapsedTime();
     boolean ok=true;
@@ -110,17 +106,17 @@ public class BlueRight {
             goingToPurple.addConditions(
                     ()-> {driveTrain.setTargetPosition(purplePosition);
                         outtake.goPURPLE();
-                        Lift.outPosition=80;
+                        Lift.outPosition=90;
                         DropDown.index=4;
                         }
                             ,
-                    ()-> {return driveTrain.inPosition( 2 , 2 , 0.15);}
+                    ()-> {return driveTrain.inPosition( 2 , 2 , 0.1);}
                             ,
                     new Node[]{releasePurple}
             );
             releasePurple.addConditions(
                     ()->{
-                        extendo.setPosition(85);
+                        extendo.setPosition(750);
 
                         topGripper.setClosed();}
                             ,
@@ -140,15 +136,15 @@ public class BlueRight {
             );
             firstWhite.addConditions(
                     ()->{
-                        extendo.setPosition(85);
+                        extendo.setPosition(750);
 
                         intake.setState(Intake.State.INTAKE);
 
-                        if(timer.seconds()>2.7)
+                        if(timer.seconds()>1.7)
                         {
                             intake.setState(Intake.State.REVERSE);
                         }
-                        if(timer.seconds()>3.2)
+                        if(timer.seconds()>2.2)
                         {
                             whiteTries++;
                             intake.setState(Intake.State.INTAKE);
@@ -159,12 +155,12 @@ public class BlueRight {
                         if(!bb0.getState() && !bb1.getState())
                         {
                             ticks++;
-                            if(ticks==3)intake.setState(Intake.State.REVERSE);
+                            if(ticks==4)intake.setState(Intake.State.REVERSE);
                         }
                     }
                     ,
                     ()->{
-                        return (whiteTries==3 || ticks==3);
+                        return (whiteTries==3 || ticks==4);
                     }
                     ,
                     new Node[]{alignForCoridor}
@@ -178,16 +174,15 @@ public class BlueRight {
                     }
                     ,
                     ()->{
-                        if(driveTrain.inPosition(3 , 10 , 0.2) && extendo.state==Extendo.State.IN)
+                        if(driveTrain.inPosition(2 , 2 , 0.1) && extendo.state==Extendo.State.IN)
                             if(!bb0.getState() && !bb1.getState())DropDown.index--;
-
                         if(extendo.state==Extendo.State.IN)
                         {
                             topGripper.setOpen();
                             bottomGripper.setOpen();
                         }
 
-                        return(driveTrain.inPosition(3 , 10 , 0.2) && extendo.state==Extendo.State.IN);
+                        return(driveTrain.inPosition(2 , 2 , 0.1) && extendo.state==Extendo.State.IN);
                     }
                     ,
                     new Node[]{beforeYellow}
@@ -196,13 +191,13 @@ public class BlueRight {
                     ()-> {
                         intake.setState(Intake.State.REPAUS);
                         driveTrain.setTargetPosition(beforeYellowPosition);
-                        Pitch.index=2;
-                        Lift.outPosition=350;
-                        if(driveTrain.localizer.getPoseEstimate().getY()>50 && topGripper.isOpen() && bottomGripper.isOpen())outtake.goUP();
+                        Pitch.index=3;
+                        Lift.outPosition=340;
+                        if(driveTrain.localizer.getPoseEstimate().getY()<-55 && topGripper.isOpen() && bottomGripper.isOpen())outtake.goUP();
                     }
                             ,
                     ()->{
-                        return driveTrain.inPosition(10 , 10 , 0.2);
+                        return driveTrain.inPosition(2 , 2 , 0.2);
                     }
                             ,
                     new Node[]{putYellow}
@@ -211,7 +206,7 @@ public class BlueRight {
                     ()->{
                         driveTrain.setTargetPosition(yellowPosition);
                         if(outtake.state== Outtake.State.DOWN)outtake.goUP();
-                        if(driveTrain.inPosition(1 , 1 , 0.1) && outtake.lift.getPosition()>310)
+                        if(driveTrain.inPosition(2 , 2 , 0.25) && outtake.lift.getPosition()>310)
                         {
                             topGripper.setClosed();
                             bottomGripper.setClosed();
@@ -227,44 +222,43 @@ public class BlueRight {
             );
             beforeGoToStack.addConditions(
                     ()->{
-                        if(driveTrain.localizer.getPoseEstimate().getY()<90)
+                        if(driveTrain.localizer.getPoseEstimate().getY()>-93)
                         outtake.goDOWN();
+                        if(outtake.state!=outtake.state.UP)
                     driveTrain.setTargetPosition(beforeGoToStackPosition);}
                     ,
-                    ()->{return driveTrain.inPosition(2 , 10 , 0.25);}
+                    ()->{
+                        return (driveTrain.inPosition(2 , 10 , 0.3) && outtake.state!=outtake.state.UP);}
                     ,
                     new Node[]{goTo7}
             );
             goTo7.addConditions(
                     ()->{
-                        outtake.goDOWN();
                         driveTrain.setTargetPosition(goTo7Position);
                     }
                     ,
                     ()->{
                         timer.reset();
                         ticks=0;
-                        if(currentNode.index>1)return true;
-                        return driveTrain.inPosition(3 , 12 , 0.3);
+                        if(currentNode.index!=0)return true;
+                        return driveTrain.inPosition(2 , 10 , 0.3);
                     }
                     ,
-                    new Node[]{takeFrom7 , takeFrom7 , takeFrom5 ,takeFrom5}
+                    new Node[]{takeFrom7 , takeFrom5 ,takeFrom5}
             );
             takeFrom7.addConditions(
                     ()->{
-                        if(currentNode.index==0)
                         driveTrain.setTargetPosition(takeFrom7Position);
-                        else driveTrain.setTargetPosition(takeFrom7Position_second);
 
-                        if(driveTrain.inPosition(2, 2 , 0.15))
+                        if(driveTrain.inPosition(1.5, 1.5 , 0.1))
                         {
 
                             if(extendo.getPosition()<750){extendo.setVelocity(1); timer.reset(); isOne=false;}
                             else {extendo.setVelocity(0.45);
 
                             intake.setState(Intake.State.INTAKE);
-                                if(timer.seconds()>3)intake.setState(Intake.State.REVERSE);
-                                if(timer.seconds()>3.5)
+                                if(timer.seconds()>2.6)intake.setState(Intake.State.REVERSE);
+                                if(timer.seconds()>2.9)
                                 {
                                     intake.setState(Intake.State.INTAKE);
                                     intake.decreaseDropDown();
@@ -285,13 +279,11 @@ public class BlueRight {
                     }
                     ,
                     ()->{
-                        if(ticks==3)intake.decreaseDropDown();
-                        if(ticks==3 && currentNode.index==1)intake.setDropDown(4);
-
-                        return (ticks==3);
+                        if(ticks==4)intake.setDropDown(4);
+                        return (ticks==4);
                     }
                     ,
-                    new Node[]{beforeBackdrop , beforeBackdrop}
+                    new Node[]{beforeBackdrop}
             );
             beforeBackdrop.addConditions(
                     ()->{
@@ -310,7 +302,7 @@ public class BlueRight {
                     }
                             ,
                     ()->{
-                        return (driveTrain.inPosition(9 , 15 , 0.3) && topGripper.isOpen() && bottomGripper.isOpen());
+                        return (driveTrain.inPosition(9 , 10 , 0.3) && topGripper.isOpen() && bottomGripper.isOpen());
                     }
                             ,
                     new Node[]{putWhites}
@@ -321,9 +313,9 @@ public class BlueRight {
                         driveTrain.setTargetPosition(putWhitesPosition);
                         if(topGripper.isOpen() && bottomGripper.isOpen())
                         {outtake.goUP();
-                        Lift.outPosition=600;}
+                        Lift.outPosition=650;}
 
-                        if(driveTrain.inPosition(4 , 1.5 , 0.2) && outtake.lift.getPosition()>350)
+                        if(driveTrain.inPosition(1 , 1 , 0.1) && outtake.lift.getPosition()>450)
                         {
                             topGripper.setClosed();
                             bottomGripper.setClosed();
@@ -334,28 +326,23 @@ public class BlueRight {
                         }
                     }
                             ,
-                    ()->{
-                        if(topGripper.isClosed() && bottomGripper.isClosed())
-                        {
-                            outtake.goDOWN();
-                        }
-                        return (topGripper.isClosed() && bottomGripper.isClosed());}
+                    ()->{return outtake.state==Outtake.State.GOING_DOWN;}
                             ,
-                    new Node[]{beforeGoToStack , beforeGoToStack , beforeGoToStack , park}
+                    new Node[]{beforeGoToStack , beforeGoToStack , park}
             );
             takeFrom5.addConditions(
                     ()->{
                     driveTrain.setTargetPosition(takeFrom5Position);
 
-            if(driveTrain.localizer.getPoseEstimate().getY()<50)
+            if(driveTrain.localizer.getPoseEstimate().getY()>-45)
             {
                 MecanumDriveTrain.KP=2;
                 if(extendo.getPosition()<750){extendo.setVelocity(1); timer.reset(); isOne=false;}
                 else {extendo.setVelocity(0.45);
 
                     intake.setState(Intake.State.INTAKE);
-                    if(timer.seconds()>3)intake.setState(Intake.State.REVERSE);
-                    if(timer.seconds()>3.5)
+                    if(timer.seconds()>2.6)intake.setState(Intake.State.REVERSE);
+                    if(timer.seconds()>2.9)
                     {
                         intake.setState(Intake.State.INTAKE);
                         intake.decreaseDropDown();
@@ -377,10 +364,10 @@ public class BlueRight {
 
                     ,
         ()->{
-                        if(ticks==3){intake.decreaseDropDown();
-            MecanumDriveTrain.KP=1.27;}
+                        if(ticks==4){intake.decreaseDropDown();
+            MecanumDriveTrain.KP=1.4;}
 
-            return (ticks==3);
+            return (ticks==4);
         }
                 ,
                 new Node[]{beforeBackdrop}

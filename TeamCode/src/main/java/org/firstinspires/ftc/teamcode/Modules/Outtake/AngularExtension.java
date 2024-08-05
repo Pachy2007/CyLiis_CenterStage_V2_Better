@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 @Config
 public class AngularExtension {
 
-    public static double retractedPos=0.69 , deployedPos=0.08;
+    public static double retractedPos=0.71 , deployedPos=0.08;
     ;
 
     public static double profileMaxVelocity=20 , profileAcceleration=32;
@@ -41,6 +41,7 @@ public class AngularExtension {
         state=initialState;
         servo=Hardware.sch1;
         if(reversed)servo.setDirection(Servo.Direction.REVERSE);
+        servo.setPosition(state.position);
         profile.setMotion(state.position , state.position , 0);
     }
 
@@ -87,8 +88,9 @@ public class AngularExtension {
     private void updateHardware()
     {
 
-        if(state==State.PURPLE)servo.setPosition(state.position);
-        else  servo.setPosition(profile.getPosition());
+
+        if(state==State.PURPLE){if(state.position!=servo.getPosition())servo.setPosition(state.position);}
+        else  {if(profile.getPosition()!=servo.getPosition())servo.setPosition(profile.getPosition());}
     }
 
     public void update()

@@ -10,9 +10,9 @@ import org.firstinspires.ftc.teamcode.Robot.Hardware;
 @Config
 public class BottomGripper {
 
-    public static double openPos=0.05    , closedPos=0.95;
+    public static double openPos=0.05    , closedPos=0.9;
 
-    public static double profileMaxVelocity=25 , profileAcceleration=32;
+    public static double profileMaxVelocity=47 , profileAcceleration=50;
     public BetterMotionProfile profile=new BetterMotionProfile(profileMaxVelocity , profileAcceleration , profileAcceleration);
 
     public enum State{
@@ -90,6 +90,7 @@ public class BottomGripper {
 
     private void updateHardware()
     {
+        if(servo.getPosition()!=profile.getPosition())
         servo.setPosition(profile.getPosition());
     }
 

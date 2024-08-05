@@ -1,13 +1,17 @@
 package org.firstinspires.ftc.teamcode.Modules.Others;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.Robot.Hardware;
 
+
+@Config
 public class Plane {
 
 
-    public static double openPosition = 0.43   , closedPosition = 0.505;;
+    public static double openPosition = 0.48   , closedPosition = 0.53;
     public Servo servo;
 
     public enum State{
@@ -36,7 +40,17 @@ public class Plane {
 
     public void Zone1()
     {
-        state=State.OPEN;
-        servo.setPosition(state.position);
+        switch (state)
+        {
+            case CLOSED:
+                state=State.OPEN;
+                servo.setPosition(openPosition);
+                break;
+            case OPEN:
+                state=State.CLOSED;
+                servo.setPosition(closedPosition);
+                break;
+        }
+
     }
 }
